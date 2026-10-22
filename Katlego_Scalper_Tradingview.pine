@@ -1,0 +1,32 @@
+//@version=5
+indicator("KATLEGO SCALPER ROBOT v1.0", overlay=true)
+
+// Inputs
+emaFast = input.int(9, "EMA Fast")
+emaSlow = input.int(21, "EMA Slow")
+rsiLen = input.int(14, "RSI Length")
+slPoints = input.int(100, "Stop Loss")
+tp1 = input.int(150, "TP1")
+tp2 = input.int(300, "TP2")
+tp3 = input.int(500, "TP3")
+
+// Indicators
+emaF = ta.ema(close, emaFast)
+emaS = ta.ema(close, emaSlow)
+rsi = ta.rsi(close, rsiLen)
+
+// Signals
+buySignal = ta.crossover(emaF, emaS) and rsi > 52
+sellSignal = ta.crossunder(emaF, emaS) and rsi < 48
+
+// Plot Signals with arrows ⬆️⬇️
+plotshape(buySignal, title="BUY", style=shape.triangleup, location=location.belowbar, color=color.green, size=size.large, text="⬆️ BUY")
+plotshape(sellSignal, title="SELL", style=shape.triangledown, location=location.abovebar, color=color.red, size=size.large, text="⬇️ SELL")
+
+// Plot EMAs
+plot(emaF, color=color.yellow)
+plot(emaS, color=color.blue)
+
+// Alerts
+alertcondition(buySignal, title="KATLEGO BUY", message="KATLEGO BUY ⬆️ TP1 {{tp1}} TP2 {{tp2}} TP3 {{tp3}}")
+alertcondition(sellSignal, title="KATLEGO SELL", message="KATLEGO SELL ⬇️ TP1 {{tp1}} TP2 {{tp2}} TP3 {{tp3}}")
